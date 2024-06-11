@@ -1,7 +1,7 @@
 import pygame
 
 
-class Cation(pygame.sprite.Sprite):
+class Ion(pygame.sprite.Sprite):
     def __init__(self, groups, speed, pos, direction):
         super().__init__(groups)
         self.speed = speed
@@ -15,3 +15,10 @@ class Cation(pygame.sprite.Sprite):
         self.image.set_colorkey("black")    # keep all black pixels transparent
         pygame.draw.circle(surface=self.image, color=(137,208,255) , center=(8,8), radius=8)
         self.rect = self.image.get_rect(center=self.pos)
+
+    def move(self, dt):
+        self.pos += self.direction * self.speed * dt
+        self.rect.center = self.pos
+
+    def update(self, dt):
+        self.move(dt)

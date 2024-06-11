@@ -1,13 +1,20 @@
 import pygame 
 from random import randint, uniform
-from ions import Cation
+from ions import Ion
 
 # Simulation Window
 screen = pygame.display.set_mode((400,400), pygame.RESIZABLE)
 pygame.display.set_caption("Electrostatic Simulation")
 clock = pygame.time.Clock()
 
-cation_group = pygame.sprite.Group()
+ion_group = pygame.sprite.Group()
+
+def spawn_ions():
+    pos = pygame.mouse.get_pos()
+    direction = pygame.math.Vector2(uniform(-1, 1), uniform(-1, 1))
+    direction = direction.normalize()
+    speed = randint(50, 400)
+    Ion(ion_group, speed, pos, direction)
 
 def main_loop():
     while True:
@@ -16,20 +23,17 @@ def main_loop():
             if event.type == pygame.QUIT:
                 exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                pos = pygame.mouse.get_pos()
-                direction = pygame.math.Vector2(uniform(-1, 1), uniform(-1, 1))
-                direction = direction.normalize()
-                speed = randint(50, 400)
-                Cation(cation_group, speed, pos, direction)
+                spawn_ions()
 
         # clock
-        clock.tick()
+        dt = clock.tick() / 1000
 
         #display
         screen.fill((80,80,80))   
-        cation_group.draw(screen)  
+        ion_group.draw(screen)  
 
         #update
+        ion_group.update(dt)
         pygame.display.update()       
 
 if __name__ == "__main__":
