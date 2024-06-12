@@ -6,6 +6,7 @@ from ions import Ion
 screen = pygame.display.set_mode((1280,720))
 pygame.display.set_caption("Electrostatic Simulation")
 clock = pygame.time.Clock()
+boundary = "infinite"
 
 ion_group = pygame.sprite.Group()
 
@@ -17,6 +18,14 @@ def spawn_ions():
     color = choice(((137,208,255), (65,105,225), (30,144,255), (0,0,205)))
     Ion(ion_group, speed, pos, direction, color)
 
+def toggle_boundary():
+    global boundary
+
+    if boundary == "infinite":
+        boundary = "closed"
+    else:
+        boundary = "infinite"
+
 def main_loop():
     while True:
         # events
@@ -25,6 +34,10 @@ def main_loop():
                 exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 spawn_ions()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_b:
+                    toggle_boundary()
+                    print(boundary)
 
         # clock
         dt = clock.tick() / 1000
@@ -34,7 +47,7 @@ def main_loop():
         ion_group.draw(screen)  
 
         #update
-        ion_group.update(dt)
+        ion_group.update(dt, boundary)
         pygame.display.update()       
 
 if __name__ == "__main__":

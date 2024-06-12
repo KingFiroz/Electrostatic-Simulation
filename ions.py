@@ -17,20 +17,36 @@ class Ion(pygame.sprite.Sprite):
         pygame.draw.circle(surface=self.image, color=self.color , center=(8,8), radius=8)
         self.rect = self.image.get_rect(center=self.pos)
 
-    def move(self, dt):
+    def move(self, dt, boundary):
         self.pos += self.direction * self.speed * dt
         self.rect.center = self.pos
 
-        # infinite boundary
-        if self.pos[0] > 1288:
-            self.pos = [-8,720-self.pos[1]]
-        if self.pos[0] < -8:
-            self.pos = [1288, 720-self.pos[1]]
+        # boundary
+        if boundary == "infinite":
+            if self.pos[0] > 1288:
+                self.pos = [-8,720-self.pos[1]]
+            if self.pos[0] < -8:
+                self.pos = [1288, 720-self.pos[1]]
 
-        if self.pos[1] > 728:
-            self.pos = [1280-self.pos[0],-8]
-        if self.pos[1] < -8:
-            self.pos = [1280-self.pos[0],728]
+            if self.pos[1] > 728:
+                self.pos = [1280-self.pos[0],-8]
+            if self.pos[1] < -8:
+                self.pos = [1280-self.pos[0],728]
 
-    def update(self, dt):
-        self.move(dt)
+        elif boundary == "closed":
+            if self.pos[0] > 1280:
+                self.direction = pygame.math.Vector2((-1 * self.direction[0], self.direction[1]))
+                self.direction.normalize()
+            if self.pos[0] < 0:
+                self.direction = pygame.math.Vector2((-1 * self.direction[0], self.direction[1]))
+                self.direction.normalize()
+
+            if self.pos[1] > 720:
+                self.direction = pygame.math.Vector2((self.direction[0], -1 * self.direction[1]))
+                self.direction.normalize()
+            if self.pos[1] < 0:
+                self.direction = pygame.math.Vector2((self.direction[0], -1 * self.direction[1]))
+                self.direction.normalize()
+
+    def update(self, dt, boundary):
+        self.move(dt, boundary)
