@@ -12,7 +12,7 @@ class Ion(pygame.sprite.Sprite):
         self.color = color
 
         self.vel = self.direction * self.speed
-        self.radius = 4
+        self.radius = 8
         global id
         id += 1
         self.id = id

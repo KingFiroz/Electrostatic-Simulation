@@ -13,14 +13,23 @@ toggle_collisions = False
 
 ion_group = pygame.sprite.Group()
 
-def spawn_ions(n):
-    for i in range(n):
-        pos = pygame.mouse.get_pos()
-        direction = pygame.math.Vector2(uniform(-1, 1), uniform(-1, 1))
-        direction = direction.normalize()
-        speed = randint(100, 400)
-        color = choice(((137,208,255), (65,105,225), (30,144,255), (0,0,205)))
-        Ion(ion_group, speed, pos, direction, color)
+def display_text(clock, ion_group):
+    font = pygame.font.SysFont("Arial", 15, bold = True)
+    fps = str(int(clock.get_fps()))
+    fps_surface = font.render(f"FPS: {fps}", False, "White")
+    ball_count_surface = font.render(f"Ball #: {len(ion_group)}", False, "White")
+    screen.blit(fps_surface, (10,10))
+    screen.blit(ball_count_surface, (10, 25))
+
+
+
+def spawn_ions():
+    pos = pygame.mouse.get_pos()
+    direction = pygame.math.Vector2(uniform(-1, 1), uniform(-1, 1))
+    direction = direction.normalize()
+    speed = randint(100, 400)
+    color = choice(((137,208,255), (65,105,225), (30,144,255), (0,0,205)))
+    Ion(ion_group, speed, pos, direction, color)
 
 def toggle_boundary():
     global boundary
@@ -65,7 +74,7 @@ def main_loop():
             if event.type == pygame.QUIT:
                 exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                spawn_ions(100)
+                spawn_ions()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_b:
                     toggle_boundary()
@@ -82,6 +91,7 @@ def main_loop():
         #display
         screen.fill((80,80,80))   
         ion_group.draw(screen)
+        display_text(clock, ion_group)
 
         # clock
         dt = clock.tick(60) / 1000
