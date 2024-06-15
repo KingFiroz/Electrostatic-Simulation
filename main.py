@@ -92,25 +92,6 @@ def check_collisions():
                 if pygame.sprite.collide_mask(ion, other_ion):
                     target.append(other_ion)
                     adjust_velocity(ion, other_ion)
-
-def electrostatic_attraction(dt):
-    target = []
-    for ion in ion_group:
-        for other_ion in ion_group:
-            if ion == other_ion or ion in target:
-                pass
-            else:
-                k = 1000000
-                x1,x2,y1,y2 = ion.rect.x, other_ion.rect.x, ion.rect.y, other_ion.rect.y
-                distance = sqrt((x2-x1)**2 + (y2-y1)**2)
-                f = (ion.charge * other_ion.charge )/ distance ** 2
-
-                ion.vel *= k * f 
-                other_ion.vel *= k * f 
-                print(k*f)
-                #except:
-                 #   ion.kill()
-                  #  other_ion.kill()
                     
 def main_loop():
     while True:
@@ -148,7 +129,6 @@ def main_loop():
 
         if toggle_collisions:
             check_collisions()
-            electrostatic_attraction(dt)
 
         #update
         ion_group.update(dt, boundary)
