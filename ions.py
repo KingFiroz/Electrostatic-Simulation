@@ -4,15 +4,17 @@ from constants import SCREEN_HEIGHT, SCREEN_WIDTH
 id = 0
 
 class Ion(pygame.sprite.Sprite):
-    def __init__(self, groups, speed, pos, direction, color):
+    def __init__(self, groups, speed, pos, direction, color, charge):
         super().__init__(groups)
         self.speed = speed
         self.pos = pos
         self.direction = direction
         self.color = color
+        self.charge = charge
 
         self.vel = self.direction * self.speed
-        self.radius = 8
+        self.radius = 20
+
         global id
         id += 1
         self.id = id

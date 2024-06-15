@@ -1,6 +1,7 @@
-       pos = pygame.mouse.get_pos()
-        direction = pygame.math.Vector2(uniform(-1, 1), uniform(-1, 1))
-        direction = direction.normalize()
-        speed = randint(100, 400)
-        color = choice(((137,208,255), (65,105,225), (30,144,255), (0,0,205)))
-        Ion(ion_group, speed, pos, direction, color)
+k = 0.0001
+                x1,x2,y1,y2 = ion.rect.x, other_ion.rect.x, ion.rect.y, other_ion.rect.y
+                distance = sqrt((x2-x1)**2 + (y2-y1)**2)
+                f = (ion.charge * other_ion.charge )/ distance ** 2
+
+                ion.vel += k*f * dt 
+                other_ion.vel += k*f * dt 

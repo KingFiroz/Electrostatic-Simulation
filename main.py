@@ -17,9 +17,23 @@ def display_text(clock, ion_group):
     font = pygame.font.SysFont("Arial", 15, bold = True)
     fps = str(int(clock.get_fps()))
     fps_surface = font.render(f"FPS: {fps}", False, "White")
+
     ball_count_surface = font.render(f"Ball #: {len(ion_group)}", False, "White")
+
+    cations = []
+    anions = []
+    for ion in ion_group:
+        if ion.charge == 1:
+            cations.append(ion)
+        else:
+            anions.append(ion)
+    cations_surface = font.render(f"Positive: {len(cations)}", False, "White")
+    anions_surface = font.render(f"Negative: {len(anions)}", False, "White")
+
     screen.blit(fps_surface, (10,10))
     screen.blit(ball_count_surface, (10, 25))
+    screen.blit(cations_surface, (10, 40))
+    screen.blit(anions_surface, (10, 55))
 
 def spawn_ions(n=1):
     for i in range(n):
@@ -27,8 +41,12 @@ def spawn_ions(n=1):
         direction = pygame.math.Vector2(uniform(-1, 1), uniform(-1, 1))
         direction = direction.normalize()
         speed = randint(100, 400)
-        color = choice(((137,208,255), (65,105,225), (30,144,255), (0,0,205)))
-        Ion(ion_group, speed, pos, direction, color)
+        charge = choice([1, -1])
+        if charge == 1:
+            color = choice(((137,208,255), (65,105,225), (30,144,255), (0,0,205)))
+        else:
+            color = choice(((247, 42, 12), (235, 84, 164), (189, 0, 16), (217, 100, 110)))
+        Ion(ion_group, speed, pos, direction, color, charge)
 
 def remove_ions():
     ion_death = 0
@@ -74,6 +92,25 @@ def check_collisions():
                 if pygame.sprite.collide_mask(ion, other_ion):
                     target.append(other_ion)
                     adjust_velocity(ion, other_ion)
+
+def electrostatic_attraction(dt):
+    target = []
+    for ion in ion_group:
+        for other_ion in ion_group:
+            if ion == other_ion or ion in target:
+                pass
+            else:
+                k = 1000000
+                x1,x2,y1,y2 = ion.rect.x, other_ion.rect.x, ion.rect.y, other_ion.rect.y
+                distance = sqrt((x2-x1)**2 + (y2-y1)**2)
+                f = (ion.charge * other_ion.charge )/ distance ** 2
+
+                ion.vel *= k * f 
+                other_ion.vel *= k * f 
+                print(k*f)
+                #except:
+                 #   ion.kill()
+                  #  other_ion.kill()
                     
 def main_loop():
     while True:
@@ -111,6 +148,7 @@ def main_loop():
 
         if toggle_collisions:
             check_collisions()
+            electrostatic_attraction(dt)
 
         #update
         ion_group.update(dt, boundary)
